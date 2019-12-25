@@ -6,7 +6,7 @@
 
 Name: cyrus-sasl
 Version: 2.1.27
-Release: 5
+Release: 6
 Summary: The Cyrus SASL API Implementation
 
 License: BSD with advertising
@@ -41,14 +41,26 @@ Requires: systemd >= 211
 
 Provides: user(%username)
 Provides: group(%username)
-Provides: %{name}-lib %{name}-lib%{?_isa}
-Provides: %{name}-gssapi %{name}-gssapi%{?_isa}
-Provides: %{name}-plain %{name}-md5 %{name}-ntlm
-Provides: %{name}-sql %{name}-ldap %{name}-scram %{name}-gs2
-Obsoletes: %{name}-lib %{name}-lib%{?_isa}
-Obsoletes: %{name}-gssapi %{name}-gssapi%{?_isa}
-Obsoletes: %{name}-plain %{name}-md5 %{name}-ntlm
-Obsoletes: %{name}-sql %{name}-ldap %{name}-scram %{name}-gs2
+Provides: %{name}-lib = %{version}-%{release}
+Provides: %{name}-lib%{?_isa} = %{version}-%{release}
+Provides: %{name}-gssapi = %{version}-%{release}
+Provides: %{name}-gssapi%{?_isa} = %{version}-%{release}
+Provides: %{name}-plain  = %{version}-%{release}
+Provides: %{name}-md5 = %{version}-%{release}
+Provides: %{name}-ntlm = %{version}-%{release}
+Provides: %{name}-sql = %{version}-%{release}
+Provides: %{name}-ldap = %{version}-%{release}
+Provides: %{name}-scram = %{version}-%{release}
+Provides: %{name}-gs2 = %{version}-%{release}
+Obsoletes: %{name}-lib  < %{version}-%{release}
+Obsoletes: %{name}-gssapi  < %{version}-%{release}
+Obsoletes: %{name}-plain  < %{version}-%{release}
+Obsoletes: %{name}-md5 < %{version}-%{release}
+Obsoletes: %{name}-ntlm < %{version}-%{release}
+Obsoletes: %{name}-sql < %{version}-%{release}
+Obsoletes: %{name}-ldap < %{version}-%{release}
+Obsoletes: %{name}-scram < %{version}-%{release}
+Obsoletes: %{name}-gs2 < %{version}-%{release}
 
 %description
 The %{name} package contains the Cyrus implementation of SASL.
@@ -255,6 +267,9 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 
 
 %changelog
+* Mon Dec 23 2019 openEuler Buildteam <buildteam@openeuler.org> - 2.1.27-6
+- Fix update problem
+
 * Tue Sep 24 2019 openEuler Buildteam <buildteam@openeuler.org> - 2.1.27-5
 - Require adjust
 
