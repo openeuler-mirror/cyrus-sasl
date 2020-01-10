@@ -6,23 +6,14 @@
 
 Name: cyrus-sasl
 Version: 2.1.27
-Release: 6
+Release: 7
 Summary: The Cyrus SASL API Implementation
 
 License: BSD with advertising
 URL: https://www.cyrusimap.org/sasl/
-Source0: cyrus-sasl-%{version}-nodlcompatorsrp.tar.gz
-Source5: saslauthd.service
-Source7: sasl-mechlist.c
-Source9: saslauthd.sysconfig
-Source10: make-no-dlcompatorsrp-tarball.sh
-Source11: autogen.sh
+Source0: https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-2.1.27/cyrus-sasl-2.1.27.tar.gz
+Source1: saslauthd.service
 
-Patch11: cyrus-sasl-2.1.25-no_rpath.patch
-Patch15: cyrus-sasl-2.1.20-saslauthd.conf-path.patch
-Patch23: cyrus-sasl-2.1.23-man.patch
-Patch24: cyrus-sasl-2.1.21-sizes.patch
-Patch49: cyrus-sasl-2.1.26-md5global.patch
 Patch6000: 0003-Prevent-double-free-of-RC4-context.patch
 
 BuildRequires: autoconf, automake, libtool, gdbm-devel, groff
@@ -90,10 +81,10 @@ using a RDBMS for storing shared secrets.
 %autosetup -n %{name}-%{version} -p1
 
 %build
-cp %{SOURCE11} ./
 rm configure aclocal.m4 config/ltmain.sh Makefile.in
 export NOCONFIGURE=yes
-sh autogen.sh
+aclocal --install
+autoreconf --verbose --force --install -Wno-portability
  
 krb5_prefix=`krb5-config --prefix`
 if test x$krb5_prefix = x%{_prefix} ; then
@@ -168,9 +159,6 @@ make sasldir=%{_libdir}/sasl2
 make -C saslauthd testsaslauthd
 make -C sample
  
-pushd lib
-../libtool --mode=link %{__cc} -o sasl2-shared-mechlist -I../include $CFLAGS %{SOURCE7} $LDFLAGS ./libsasl2.la
- 
 
 %install
 test "$RPM_BUILD_ROOT" != "/" && rm -rf $RPM_BUILD_ROOT
@@ -187,15 +175,10 @@ install -m755 sample/server $RPM_BUILD_ROOT%{_bindir}/sasl2-sample-server
 install -m755 saslauthd/testsaslauthd $RPM_BUILD_ROOT%{_sbindir}/testsaslauthd
 install -m755 -d $RPM_BUILD_ROOT%{_mandir}/man8/
 install -m644 -p saslauthd/saslauthd.mdoc $RPM_BUILD_ROOT%{_mandir}/man8/saslauthd.8
-install -m644 -p saslauthd/testsaslauthd.8 $RPM_BUILD_ROOT%{_mandir}/man8/testsaslauthd.8
 install -d -m755 $RPM_BUILD_ROOT/%{_unitdir} $RPM_BUILD_ROOT/etc/sysconfig
-install -m644 -p %{SOURCE5} $RPM_BUILD_ROOT/%{_unitdir}/saslauthd.service
-install -m644 -p %{SOURCE9} $RPM_BUILD_ROOT/etc/sysconfig/saslauthd
+install -m644 -p %{SOURCE1} $RPM_BUILD_ROOT/%{_unitdir}/saslauthd.service
 install -m755 -d $RPM_BUILD_ROOT/%{_sysconfdir}/sasl2
 install -m755 -d $RPM_BUILD_ROOT/%{_libdir}/sasl2
- 
-./libtool --mode=install \
-install -m755 lib/sasl2-shared-mechlist $RPM_BUILD_ROOT/%{_sbindir}/
  
 rm -f $RPM_BUILD_ROOT%{_libdir}/sasl2/libotp.*
 rm -f $RPM_BUILD_ROOT%{_mandir}/cat8/saslauthd.8
@@ -221,14 +204,12 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 %defattr(-,root,root)
 %license COPYING
 %doc AUTHORS
-%config(noreplace) /etc/sysconfig/saslauthd
 %dir %{_sysconfdir}/sasl2
 %{_sbindir}/pluginviewer
 %{_sbindir}/saslauthd
 %{_sbindir}/testsaslauthd
 %{_sbindir}/saslpasswd2
 %{_sbindir}/sasldblistusers2
-%{_sbindir}/sasl2-shared-mechlist
 %{_libdir}/libsasl*.so.*
 %dir %{_libdir}/sasl2/
 %{_libdir}/sasl2/*anonymous*.so*
@@ -267,6 +248,9 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 
 
 %changelog
+* Tue Jan 7 2020 openEuler Buildteam <buildteam@openeuler.org> - 2.1.27-7
+- simplify functions
+
 * Mon Dec 23 2019 openEuler Buildteam <buildteam@openeuler.org> - 2.1.27-6
 - Fix update problem
 
