@@ -6,7 +6,7 @@
 
 Name: cyrus-sasl
 Version: 2.1.27
-Release: 7
+Release: 8
 Summary: The Cyrus SASL API Implementation
 
 License: BSD with advertising
@@ -32,23 +32,18 @@ Requires: systemd >= 211
 
 Provides: user(%username)
 Provides: group(%username)
-Provides: %{name}-lib = %{version}-%{release}
-Provides: %{name}-lib%{?_isa} = %{version}-%{release}
 Provides: %{name}-gssapi = %{version}-%{release}
 Provides: %{name}-gssapi%{?_isa} = %{version}-%{release}
 Provides: %{name}-plain  = %{version}-%{release}
 Provides: %{name}-md5 = %{version}-%{release}
 Provides: %{name}-ntlm = %{version}-%{release}
-Provides: %{name}-sql = %{version}-%{release}
 Provides: %{name}-ldap = %{version}-%{release}
 Provides: %{name}-scram = %{version}-%{release}
 Provides: %{name}-gs2 = %{version}-%{release}
-Obsoletes: %{name}-lib  < %{version}-%{release}
 Obsoletes: %{name}-gssapi  < %{version}-%{release}
 Obsoletes: %{name}-plain  < %{version}-%{release}
 Obsoletes: %{name}-md5 < %{version}-%{release}
 Obsoletes: %{name}-ntlm < %{version}-%{release}
-Obsoletes: %{name}-sql < %{version}-%{release}
 Obsoletes: %{name}-ldap < %{version}-%{release}
 Obsoletes: %{name}-scram < %{version}-%{release}
 Obsoletes: %{name}-gs2 < %{version}-%{release}
@@ -60,16 +55,24 @@ adding authentication support to connection-based protocols.
 
 %package devel
 Summary: Development files for %{name}
-Requires: %{name} = %{version}-%{release}
+Requires: %{name}-lib%{?_isa} = %{version}-%{release}
+Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: pkgconf
 
 %description devel
 The %{name}-devel package contains files needed for developing and
 compiling applications which use the Cyrus SASL library.
 
+%package lib
+Summary: Shared libraries needed by applications which use Cyrus SASL
+
+%description lib
+The %{name}-lib package contains shared libraries which are needed by
+applications which use the Cyrus SASL library.
+
 %package sql
 Summary: SQL auxprop support for Cyrus SASL
-Requires: %{name} = %{version}-%{release}
+Requires: %{name}-lib%{?_isa} = %{version}-%{release}
 
 %description sql
 The %{name}-sql package contains the Cyrus SASL plugin which supports
@@ -208,12 +211,7 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 %{_sbindir}/pluginviewer
 %{_sbindir}/saslauthd
 %{_sbindir}/testsaslauthd
-%{_sbindir}/saslpasswd2
-%{_sbindir}/sasldblistusers2
-%{_libdir}/libsasl*.so.*
 %dir %{_libdir}/sasl2/
-%{_libdir}/sasl2/*anonymous*.so*
-%{_libdir}/sasl2/*sasldb*.so*
 %{_libdir}/sasl2/*plain*.so*
 %{_libdir}/sasl2/*login*.so*
 %if ! %{bootstrap_cyrus_sasl}
@@ -227,6 +225,16 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 %{_libdir}/sasl2/libgs2.so*
 %{_unitdir}/saslauthd.service
 %ghost /run/saslauthd
+
+%files lib
+%{_libdir}/libsasl*.so.*
+%dir %{_sysconfdir}/sasl2
+%{_libdir}/libsasl*.so.*
+%dir %{_libdir}/sasl2/
+%{_libdir}/sasl2/*anonymous*.so*
+%{_libdir}/sasl2/*sasldb*.so*
+%{_sbindir}/saslpasswd2
+%{_sbindir}/sasldblistusers2
 
 %files devel
 %defattr(-,root,root)
@@ -248,6 +256,9 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 
 
 %changelog
+* Mon Feb 17 2020 openEuler Buildteam <buildteam@openeuler.org> - 2.1.27-8
+- add cyrus-sasl-lib containing dynamic library for cyrus-sasl
+
 * Tue Jan 7 2020 openEuler Buildteam <buildteam@openeuler.org> - 2.1.27-7
 - simplify functions
 
