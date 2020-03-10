@@ -6,7 +6,7 @@
 
 Name: cyrus-sasl
 Version: 2.1.27
-Release: 8
+Release: 9
 Summary: The Cyrus SASL API Implementation
 
 License: BSD with advertising
@@ -14,7 +14,8 @@ URL: https://www.cyrusimap.org/sasl/
 Source0: https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-2.1.27/cyrus-sasl-2.1.27.tar.gz
 Source1: saslauthd.service
 
-Patch6000: 0003-Prevent-double-free-of-RC4-context.patch
+Patch0: 0003-Prevent-double-free-of-RC4-context.patch
+Patch1: fix-CVE-2019-19906.patch
 
 BuildRequires: autoconf, automake, libtool, gdbm-devel, groff
 BuildRequires: krb5-devel >= 1.2.2, openssl-devel, pam-devel, pkgconfig
@@ -256,6 +257,9 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 
 
 %changelog
+* Tue Mar 10 2020 openEuler Buildteam <buildteam@openeuler.org> - 2.1.27-9
+- fix CVE-2019-19906
+
 * Mon Feb 17 2020 openEuler Buildteam <buildteam@openeuler.org> - 2.1.27-8
 - add cyrus-sasl-lib containing dynamic library for cyrus-sasl
 
