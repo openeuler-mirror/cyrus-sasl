@@ -6,13 +6,14 @@
 
 Name: cyrus-sasl
 Version: 2.1.27
-Release: 9
+Release: 10
 Summary: The Cyrus SASL API Implementation
 
 License: BSD with advertising
 URL: https://www.cyrusimap.org/sasl/
 Source0: https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-2.1.27/cyrus-sasl-2.1.27.tar.gz
 Source1: saslauthd.service
+Source2: saslauthd.sysconfig
 
 Patch0: 0003-Prevent-double-free-of-RC4-context.patch
 Patch1: fix-CVE-2019-19906.patch
@@ -179,8 +180,10 @@ install -m755 sample/server $RPM_BUILD_ROOT%{_bindir}/sasl2-sample-server
 install -m755 saslauthd/testsaslauthd $RPM_BUILD_ROOT%{_sbindir}/testsaslauthd
 install -m755 -d $RPM_BUILD_ROOT%{_mandir}/man8/
 install -m644 -p saslauthd/saslauthd.mdoc $RPM_BUILD_ROOT%{_mandir}/man8/saslauthd.8
-install -d -m755 $RPM_BUILD_ROOT/%{_unitdir} $RPM_BUILD_ROOT/etc/sysconfig
+install -m755 -d $RPM_BUILD_ROOT/etc/rc.d/init.d $RPM_BUILD_ROOT/etc/sysconfig
+install -d -m755 $RPM_BUILD_ROOT/%{_unitdir}
 install -m644 -p %{SOURCE1} $RPM_BUILD_ROOT/%{_unitdir}/saslauthd.service
+install -m644 -p %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/saslauthd
 install -m755 -d $RPM_BUILD_ROOT/%{_sysconfdir}/sasl2
 install -m755 -d $RPM_BUILD_ROOT/%{_libdir}/sasl2
  
@@ -224,6 +227,7 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 %{_libdir}/sasl2/*gssapi*.so*
 %{_libdir}/sasl2/libscram.so*
 %{_libdir}/sasl2/libgs2.so*
+%config(noreplace) /etc/sysconfig/saslauthd
 %{_unitdir}/saslauthd.service
 %ghost /run/saslauthd
 
@@ -257,6 +261,9 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 
 
 %changelog
+* Sat Mar 21 2020 openEuler Buildteam <buildteam@openeuler.org> - 2.1.27-10
+- add missing saslauthd.sysconfig for saslauthd.service
+
 * Tue Mar 10 2020 openEuler Buildteam <buildteam@openeuler.org> - 2.1.27-9
 - fix CVE-2019-19906
 
