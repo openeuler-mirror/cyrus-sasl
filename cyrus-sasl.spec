@@ -6,7 +6,7 @@
 
 Name: cyrus-sasl
 Version: 2.1.27
-Release: 10
+Release: 11
 Summary: The Cyrus SASL API Implementation
 
 License: BSD with advertising
@@ -21,7 +21,6 @@ Patch1: fix-CVE-2019-19906.patch
 BuildRequires: autoconf, automake, libtool, gdbm-devel, groff
 BuildRequires: krb5-devel >= 1.2.2, openssl-devel, pam-devel, pkgconfig
 BuildRequires: mariadb-connector-c-devel, postgresql-devel, zlib-devel
-BuildRequires: libdb-devel
 %if ! %{bootstrap_cyrus_sasl}
 BuildRequires: openldap-devel
 %endif
@@ -138,8 +137,7 @@ echo "$LDFLAGS"
         --enable-gssapi${krb5_prefix:+=${krb5_prefix}} \
         --with-gss_impl=mit \
         --with-rc4 \
-        --with-dblib=berkeley \
-        --with-bdb=db \
+        --with-bdb=gdbm \
         --with-saslauthd=/run/saslauthd --without-pwcheck \
 %if ! %{bootstrap_cyrus_sasl}
         --with-ldap \
@@ -261,6 +259,9 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 
 
 %changelog
+* Fri Jan 8 2021 yangzhuangzhuang <yangzhuangzhuang1@huawei.com> - 2.1.27-11
+- BuildRequires: replace libdb with gdbm
+
 * Sat Mar 21 2020 openEuler Buildteam <buildteam@openeuler.org> - 2.1.27-10
 - add missing saslauthd.sysconfig for saslauthd.service
 
