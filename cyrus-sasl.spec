@@ -6,7 +6,7 @@
 
 Name: cyrus-sasl
 Version: 2.1.27
-Release: 11
+Release: 12
 Summary: The Cyrus SASL API Implementation
 
 License: BSD with advertising
@@ -17,6 +17,7 @@ Source2: saslauthd.sysconfig
 
 Patch0: 0003-Prevent-double-free-of-RC4-context.patch
 Patch1: fix-CVE-2019-19906.patch
+Patch2: backport-db_gdbm-fix-gdbm_errno-overlay-from-gdbm_close.patch
 
 BuildRequires: autoconf, automake, libtool, gdbm-devel, groff
 BuildRequires: krb5-devel >= 1.2.2, openssl-devel, pam-devel, pkgconfig
@@ -259,6 +260,9 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 
 
 %changelog
+* Wed May 12 2021 wangchen <wangchen137@huawei.com> - 2.1.27-12
+- fix gdbm_errno overlay from gdbm_close
+
 * Fri Jan 8 2021 yangzhuangzhuang <yangzhuangzhuang1@huawei.com> - 2.1.27-11
 - BuildRequires: replace libdb with gdbm
 
