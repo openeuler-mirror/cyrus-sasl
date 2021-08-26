@@ -6,7 +6,7 @@
 
 Name: cyrus-sasl
 Version: 2.1.27
-Release: 11
+Release: 12
 Summary: The Cyrus SASL API Implementation
 
 License: BSD with advertising
@@ -139,7 +139,6 @@ echo "$LDFLAGS"
         --with-gss_impl=mit \
         --with-rc4 \
         --with-bdb=gdbm \
-        --with-bdb=db \
         --with-saslauthd=/run/saslauthd --without-pwcheck \
 %if ! %{bootstrap_cyrus_sasl}
         --with-ldap \
@@ -261,6 +260,9 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 
 
 %changelog
+* Thu Aug 26 2021 panxiaohe <panxiaohe@huawei.com> - 2.1.27-12
+- remove with-bdb=db from configure 
+
 * Sat Jun 19 2021 panxiaohe <panxiaohe@huawei.com> - 2.1.27-11
 - fix gdbm_errno overlay from gdbm_close
 - BuildRequires: replace libdb with gdbm
