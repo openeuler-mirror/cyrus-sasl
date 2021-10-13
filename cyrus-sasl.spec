@@ -6,7 +6,7 @@
 
 Name: cyrus-sasl
 Version: 2.1.27
-Release: 12
+Release: 13
 Summary: The Cyrus SASL API Implementation
 
 License: BSD with advertising
@@ -22,9 +22,7 @@ Patch2: backport-db_gdbm-fix-gdbm_errno-overlay-from-gdbm_close.patch
 BuildRequires: autoconf, automake, libtool, gdbm-devel, groff
 BuildRequires: krb5-devel >= 1.2.2, openssl-devel, pam-devel, pkgconfig
 BuildRequires: mariadb-connector-c-devel, postgresql-devel, zlib-devel
-%if ! %{bootstrap_cyrus_sasl}
-BuildRequires: openldap-devel
-%endif
+
 %{?systemd_requires}
 
 Requires(pre): /usr/sbin/useradd /usr/sbin/groupadd
@@ -34,21 +32,6 @@ Requires: systemd >= 211
 
 Provides: user(%username)
 Provides: group(%username)
-Provides: %{name}-gssapi = %{version}-%{release}
-Provides: %{name}-gssapi%{?_isa} = %{version}-%{release}
-Provides: %{name}-plain  = %{version}-%{release}
-Provides: %{name}-md5 = %{version}-%{release}
-Provides: %{name}-ntlm = %{version}-%{release}
-Provides: %{name}-ldap = %{version}-%{release}
-Provides: %{name}-scram = %{version}-%{release}
-Provides: %{name}-gs2 = %{version}-%{release}
-Obsoletes: %{name}-gssapi  < %{version}-%{release}
-Obsoletes: %{name}-plain  < %{version}-%{release}
-Obsoletes: %{name}-md5 < %{version}-%{release}
-Obsoletes: %{name}-ntlm < %{version}-%{release}
-Obsoletes: %{name}-ldap < %{version}-%{release}
-Obsoletes: %{name}-scram < %{version}-%{release}
-Obsoletes: %{name}-gs2 < %{version}-%{release}
 
 %description
 The %{name} package contains the Cyrus implementation of SASL.
@@ -64,6 +47,75 @@ Requires: pkgconf
 %description devel
 The %{name}-devel package contains files needed for developing and
 compiling applications which use the Cyrus SASL library.
+
+%if ! %{bootstrap_cyrus_sasl}
+
+%package ldap
+BuildRequires: openldap-devel
+Requires: %{name}-lib%{?_isa} = %{version}-%{release}
+Conflicts: %{name} < 2.1.27-13
+Summary: LDAP auxprop support for Cyrus SASL
+
+%description ldap
+The %{name}-ldap package contains the Cyrus SASL plugin which supports using
+a directory server, accessed using LDAP, for storing shared secrets.
+
+%endif
+
+%package gssapi
+Requires: %{name}-lib%{?_isa} = %{version}-%{release}
+Conflicts: %{name} < 2.1.27-13
+Summary: GSSAPI authentication support for Cyrus SASL
+
+%description gssapi
+The %{name}-gssapi package contains the Cyrus SASL plugins which
+support GSSAPI authentication. GSSAPI is commonly used for Kerberos
+authentication.
+
+%package plain
+Requires: %{name}-lib%{?_isa} = %{version}-%{release}
+Conflicts: %{name} < 2.1.27-13
+Summary: PLAIN and LOGIN authentication support for Cyrus SASL
+
+%description plain
+The %{name}-plain package contains the Cyrus SASL plugins which support
+PLAIN and LOGIN authentication schemes.
+
+%package md5
+Requires: %{name}-lib%{?_isa} = %{version}-%{release}
+Conflicts: %{name} < 2.1.27-13
+Summary: CRAM-MD5 and DIGEST-MD5 authentication support for Cyrus SASL
+
+%description md5
+The %{name}-md5 package contains the Cyrus SASL plugins which support
+CRAM-MD5 and DIGEST-MD5 authentication schemes.
+
+%package ntlm
+Requires: %{name}-lib%{?_isa} = %{version}-%{release}
+Conflicts: %{name} < 2.1.27-13
+Summary: NTLM authentication support for Cyrus SASL
+
+%description ntlm
+The %{name}-ntlm package contains the Cyrus SASL plugin which supports
+the NTLM authentication scheme.
+
+%package scram
+Requires: %{name}-lib%{?_isa} = %{version}-%{release}
+Conflicts: %{name} < 2.1.27-13
+Summary: SCRAM auxprop support for Cyrus SASL
+
+%description scram
+The %{name}-scram package contains the Cyrus SASL plugin which supports
+the SCRAM authentication scheme.
+
+%package gs2
+Requires: %{name}-lib%{?_isa} = %{version}-%{release}
+Conflicts: %{name} < 2.1.27-13
+Summary: GS2 support for Cyrus SASL
+
+%description gs2
+The %{name}-gs2 package contains the Cyrus SASL plugin which supports
+the GS2 authentication scheme.
 
 %package lib
 Summary: Shared libraries needed by applications which use Cyrus SASL
@@ -214,18 +266,6 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 %{_sbindir}/pluginviewer
 %{_sbindir}/saslauthd
 %{_sbindir}/testsaslauthd
-%dir %{_libdir}/sasl2/
-%{_libdir}/sasl2/*plain*.so*
-%{_libdir}/sasl2/*login*.so*
-%if ! %{bootstrap_cyrus_sasl}
-%{_libdir}/sasl2/*ldapdb*.so*
-%endif
-%{_libdir}/sasl2/*crammd5*.so*
-%{_libdir}/sasl2/*digestmd5*.so*
-%{_libdir}/sasl2/*ntlm*.so*
-%{_libdir}/sasl2/*gssapi*.so*
-%{_libdir}/sasl2/libscram.so*
-%{_libdir}/sasl2/libgs2.so*
 %config(noreplace) /etc/sysconfig/saslauthd
 %{_unitdir}/saslauthd.service
 %ghost /run/saslauthd
@@ -248,9 +288,34 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 %{_libdir}/libsasl*.*so
 %{_libdir}/pkgconfig/*.pc
 
+%if ! %{bootstrap_cyrus_sasl}
+%files ldap
+%{_libdir}/sasl2/*ldapdb*.so*
+%endif
+
 %files sql
 %defattr(-,root,root)
 %{_libdir}/sasl2/*sql*.so*
+
+%files plain
+%{_libdir}/sasl2/*plain*.so*
+%{_libdir}/sasl2/*login*.so*
+
+%files md5
+%{_libdir}/sasl2/*crammd5*.so*
+%{_libdir}/sasl2/*digestmd5*.so*
+
+%files ntlm
+%{_libdir}/sasl2/*ntlm*.so*
+
+%files gssapi
+%{_libdir}/sasl2/*gssapi*.so*
+
+%files scram
+%{_libdir}/sasl2/libscram.so*
+
+%files gs2
+%{_libdir}/sasl2/libgs2.so*
 
 %files help
 %defattr(-,root,root)
@@ -260,6 +325,10 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 
 
 %changelog
+* Wed Oct 13 2021 liyanan <liyanan32@huawei.com> - 2.1.27-13
+- Split cyrus-sasl-ldap cyrus-sasl-gs2 cyrus-sasl-scram cyrus-sasl-gssapi
+  cyrus-sasl-md5 cyrus-sasl-ntlm cyrus-sasl-plain sub-package
+
 * Wed May 12 2021 wangchen <wangchen137@huawei.com> - 2.1.27-12
 - fix gdbm_errno overlay from gdbm_close
 
