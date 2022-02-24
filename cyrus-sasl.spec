@@ -6,7 +6,7 @@
 
 Name: cyrus-sasl
 Version: 2.1.27
-Release: 10
+Release: 11
 Summary: The Cyrus SASL API Implementation
 
 License: BSD with advertising
@@ -17,6 +17,7 @@ Source2: saslauthd.sysconfig
 
 Patch0: 0003-Prevent-double-free-of-RC4-context.patch
 Patch1: fix-CVE-2019-19906.patch
+Patch2: backport-CVE-2022-24407-Escape-password-for-SQL-insert-update.patch
 
 BuildRequires: autoconf, automake, libtool, gdbm-devel, groff
 BuildRequires: krb5-devel >= 1.2.2, openssl-devel, pam-devel, pkgconfig
@@ -261,6 +262,9 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 
 
 %changelog
+* Thu Feb 24 2022 yixiangzhike <yixiangzhike007@163.com> - 2.1.27-11
+- fix CVE-2022-24407
+
 * Sat Mar 21 2020 openEuler Buildteam <buildteam@openeuler.org> - 2.1.27-10
 - add missing saslauthd.sysconfig for saslauthd.service
 
