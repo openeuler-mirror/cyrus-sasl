@@ -6,7 +6,7 @@
 
 Name: cyrus-sasl
 Version: 2.1.27
-Release: 13
+Release: 14
 Summary: The Cyrus SASL API Implementation
 
 License: BSD with advertising
@@ -18,6 +18,7 @@ Source2: saslauthd.sysconfig
 Patch0: 0003-Prevent-double-free-of-RC4-context.patch
 Patch1: fix-CVE-2019-19906.patch
 Patch2: backport-db_gdbm-fix-gdbm_errno-overlay-from-gdbm_close.patch
+Patch3: backport-CVE-2022-24407-Escape-password-for-SQL-insert-update.patch
 
 BuildRequires: autoconf, automake, libtool, gdbm-devel, groff
 BuildRequires: krb5-devel >= 1.2.2, openssl-devel, pam-devel, pkgconfig
@@ -325,6 +326,9 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 
 
 %changelog
+* Thu Feb 24 2022 yixiangzhike <yixiangzhike007@163.com> - 2.1.27-14
+- fix CVE-2022-24407
+
 * Wed Oct 13 2021 liyanan <liyanan32@huawei.com> - 2.1.27-13
 - Split cyrus-sasl-ldap cyrus-sasl-gs2 cyrus-sasl-scram cyrus-sasl-gssapi
   cyrus-sasl-md5 cyrus-sasl-ntlm cyrus-sasl-plain sub-package
