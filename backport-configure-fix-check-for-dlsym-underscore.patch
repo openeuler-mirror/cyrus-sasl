@@ -1,0 +1,28 @@
+From 999255e05719f61bdbce8125be2ee774493aa64a Mon Sep 17 00:00:00 2001
+From: Ignacio Casal Quinteiro <qignacio@amazon.com>
+Date: Wed, 3 Mar 2021 09:18:09 +0100
+Subject: [PATCH] configure: fix check for dlsym underscore
+
+The exit function requires to include stdlib otherwise
+this will fail on new versions of MacOS
+
+Signed-off-by: Ignacio Casal Quinteiro <qignacio@amazon.com>
+---
+ configure.ac | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/configure.ac b/configure.ac
+index a106d35..f3e5ddc 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -216,6 +216,7 @@ if test $sasl_cv_uscore = yes; then
+ 	AC_CACHE_VAL(sasl_cv_dlsym_adds_uscore,AC_TRY_RUN( [
+ #include <dlfcn.h>
+ #include <stdio.h>
++#include <stdlib.h>
+ void foo() { int i=0;}
+ int main() { void *self, *ptr1, *ptr2; self=dlopen(NULL,RTLD_LAZY);
+     if(self) { ptr1=dlsym(self,"foo"); ptr2=dlsym(self,"_foo");
+-- 
+1.8.3.1
+
