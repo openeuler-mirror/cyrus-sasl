@@ -6,7 +6,7 @@
 
 Name: cyrus-sasl
 Version: 2.1.27
-Release: 12
+Release: 13
 Summary: The Cyrus SASL API Implementation
 
 License: BSD with advertising
@@ -18,11 +18,11 @@ Source2: saslauthd.sysconfig
 Patch0: 0003-Prevent-double-free-of-RC4-context.patch
 Patch1: fix-CVE-2019-19906.patch
 Patch2: backport-CVE-2022-24407-Escape-password-for-SQL-insert-update.patch
+Patch3: backport-db_gdbm-fix-gdbm_errno-overlay-from-gdbm_close.patch
 
 BuildRequires: autoconf, automake, libtool, gdbm-devel, groff
 BuildRequires: krb5-devel >= 1.2.2, openssl-devel, pam-devel, pkgconfig
 BuildRequires: mariadb-connector-c-devel, postgresql-devel, zlib-devel
-BuildRequires: libdb-devel
 
 %{?systemd_requires}
 
@@ -193,8 +193,7 @@ echo "$LDFLAGS"
         --enable-gssapi${krb5_prefix:+=${krb5_prefix}} \
         --with-gss_impl=mit \
         --with-rc4 \
-        --with-dblib=berkeley \
-        --with-bdb=db \
+        --with-bdb=gdbm \
         --with-saslauthd=/run/saslauthd --without-pwcheck \
 %if ! %{bootstrap_cyrus_sasl}
         --with-ldap \
@@ -329,6 +328,10 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 
 
 %changelog
+* Wed Aug 31 2022 panxiaohe <panxh.life@foxmail.com> - 2.1.27-13
+- BuildRequires: replace libdb with gdbm
+- Fix gdbm_errno overlay from gdbm_close
+
 * Thu Feb 24 2022 yixiangzhike <yixiangzhike007@163.com> - 2.1.27-12
 - fix CVE-2022-24407
 
