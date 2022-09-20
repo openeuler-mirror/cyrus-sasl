@@ -6,6 +6,8 @@ Type=forking
 EnvironmentFile=/etc/sysconfig/saslauthd
 ExecStart=/usr/sbin/saslauthd -m /run/saslauthd -a pam $FLAGS
 RuntimeDirectory=saslauthd
+Restart=always
+RestartSec=1s
 
 [Install]
 WantedBy=multi-user.target
