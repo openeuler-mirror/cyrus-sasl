@@ -6,7 +6,7 @@
 
 Name: cyrus-sasl
 Version: 2.1.27
-Release: 14
+Release: 15
 Summary: The Cyrus SASL API Implementation
 
 License: BSD with advertising
@@ -264,6 +264,9 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 
 
 %changelog
+* Tue Sep 20 2022 yixiangzhike <yixiangzhike007@163.com> - 2.1.27-15
+- saslauthd always restart with 1s
+
 * Fri May 20 2022 yixiangzhike <yixiangzhike007@163.com> - 2.1.27-14
 - compatible with autoconf-2.71
 
