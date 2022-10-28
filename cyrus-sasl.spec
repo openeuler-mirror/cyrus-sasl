@@ -5,23 +5,17 @@
 %global bootstrap_cyrus_sasl 0
 
 Name: cyrus-sasl
-Version: 2.1.27
-Release: 15
+Version: 2.1.28
+Release: 1
 Summary: The Cyrus SASL API Implementation
 
 License: BSD with advertising
 URL: https://www.cyrusimap.org/sasl/
-Source0: https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-2.1.27/cyrus-sasl-2.1.27.tar.gz
+Source0: https://github.com/cyrusimap/cyrus-sasl/releases/download/%{name}-%{version}/%{name}-%{version}.tar.gz
 Source1: saslauthd.service
 Source2: saslauthd.sysconfig
 
-Patch0: 0003-Prevent-double-free-of-RC4-context.patch
-Patch1: fix-CVE-2019-19906.patch
-Patch2: backport-db_gdbm-fix-gdbm_errno-overlay-from-gdbm_close.patch
-Patch3: backport-CVE-2022-24407-Escape-password-for-SQL-insert-update.patch
-Patch4: backport-configure-fix-check-for-dlsym-underscore.patch
-Patch5: backport-configure.ac-avoid-side-effects-in-AC_CACHE_VAL.patch  
-Patch6: backport-configure.ac-properly-quote-macro-arguments.patch
+Patch1:  backport-Fix-earlier-554-commit-to-use-fetch_errno-instead-of.patch
 
 BuildRequires: autoconf, automake, libtool, gdbm-devel, groff
 BuildRequires: krb5-devel >= 1.2.2, openssl-devel, pam-devel, pkgconfig
@@ -264,6 +258,9 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 
 
 %changelog
+* Tue Oct 25 2022 yixiangzhike <yixiangzhike007@163.com> - 2.1.28-1
+- update to 2.1.28
+
 * Tue Sep 20 2022 yixiangzhike <yixiangzhike007@163.com> - 2.1.27-15
 - saslauthd always restart with 1s
 
