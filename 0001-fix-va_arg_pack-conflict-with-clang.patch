@@ -1,0 +1,47 @@
+From 0ad1ba5931b5b3d7eaa138bb9235ff0205974c49 Mon Sep 17 00:00:00 2001
+From: liyunfei <liyunfei33@huawei.com>
+Date: Tue, 23 May 2023 15:15:08 +0800
+Subject: [PATCH] fix va_arg_pack conflict with clang
+
+---
+ sample/common.c | 2 ++
+ sample/common.h | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/sample/common.c b/sample/common.c
+index 712549f..a6cc716 100644
+--- a/sample/common.c
++++ b/sample/common.c
+@@ -127,6 +127,7 @@ int recv_string(FILE *f, char *buf, int buflen)
+ 
+ int debuglevel = 0;
+ 
++#ifdef __va_arg_pack
+ int dprintf(int lvl, const char *fmt, ...)
+ {
+     va_list ap;
+@@ -140,6 +141,7 @@ int dprintf(int lvl, const char *fmt, ...)
+ 
+     return ret;
+ }
++#endif
+ 
+ void saslerr(int why, const char *what)
+ {
+diff --git a/sample/common.h b/sample/common.h
+index 819d010..a59f849 100644
+--- a/sample/common.h
++++ b/sample/common.h
+@@ -43,7 +43,9 @@ extern int send_string(FILE *f, const char *s, int l);
+ extern int recv_string(FILE *f, char *buf, int buflen);
+ 
+ extern int debuglevel;
++#ifdef __va_arg_pack
+ extern int dprintf(int lvl, const char *fmt, ...);
++#endif
+ 
+ extern void saslerr(int why, const char *what);
+ extern void saslfail(int why, const char *what);
+-- 
+2.28.0.windows.1
+

@@ -6,7 +6,7 @@
 
 Name: cyrus-sasl
 Version: 2.1.28
-Release: 1
+Release: 2
 Summary: The Cyrus SASL API Implementation
 
 License: BSD with advertising
@@ -16,6 +16,7 @@ Source1: saslauthd.service
 Source2: saslauthd.sysconfig
 
 Patch1:  backport-Fix-earlier-554-commit-to-use-fetch_errno-instead-of.patch
+Patch2:  0001-fix-va_arg_pack-conflict-with-clang.patch
 
 BuildRequires: autoconf, automake, libtool, gdbm-devel, groff
 BuildRequires: krb5-devel >= 1.2.2, openssl-devel, pam-devel, pkgconfig
@@ -258,6 +259,9 @@ getent passwd %{username} >/dev/null || useradd -r -g %{username} -d %{homedir} 
 
 
 %changelog
+* Tue May 23 2023 liyunfei <liyunfei33@huawei.com> - 2.1.28-2
+- fix va_arg_pack conflict with clang compile
+
 * Tue Oct 25 2022 yixiangzhike <yixiangzhike007@163.com> - 2.1.28-1
 - update to 2.1.28
 
